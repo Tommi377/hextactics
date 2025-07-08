@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://fiq3xd1h5emu"]
+
+[ext_resource type="Script" uid="uid://byp5bmr7tmia3" path="res://scenes/level/level.gd" id="1_nbgty"]
+[ext_resource type="PackedScene" uid="uid://w0cr3nyrircj" path="res://scenes/tile_map/tile_map.tscn" id="2_i166f"]
+
+[node name="Level" type="Node"]
+script = ExtResource("1_nbgty")
+
+[node name="TileMap" parent="." instance=ExtResource("2_i166f")]
+unique_name_in_owner = true
+position = Vector2(544, 323)

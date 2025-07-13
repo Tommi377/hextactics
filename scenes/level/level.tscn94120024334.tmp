@@ -1,19 +1,34 @@
-[gd_scene load_steps=7 format=4 uid="uid://fiq3xd1h5emu"]
+[gd_scene load_steps=10 format=4 uid="uid://fiq3xd1h5emu"]
 
 [ext_resource type="Script" uid="uid://byp5bmr7tmia3" path="res://scenes/level/level.gd" id="1_nbgty"]
 [ext_resource type="Script" uid="uid://sshvq7o6fv5a" path="res://scenes/tile_map/tile_map_controller.gd" id="2_hnne4"]
 [ext_resource type="TileSet" uid="uid://ci8cn4gwdnphx" path="res://scenes/level/32_tile_map.tres" id="3_hnne4"]
 [ext_resource type="Script" uid="uid://bn6int3orwv3f" path="res://components/unit_grid.gd" id="4_vpf64"]
 [ext_resource type="Script" uid="uid://c1njj84seuhqc" path="res://components/play_area.gd" id="4_wcngd"]
-[ext_resource type="Script" uid="uid://bkc2vx5p7mnpa" path="res://components/tile_highlighter.gd" id="6_vpf64"]
+[ext_resource type="PackedScene" uid="uid://f4e3kupbm74j" path="res://scenes/unit/unit.tscn" id="5_hnne4"]
+[ext_resource type="Script" uid="uid://54kmpynixctn" path="res://data/units/unit_stats.gd" id="6_vpf64"]
+
+[sub_resource type="Resource" id="Resource_wcngd"]
+script = ExtResource("6_vpf64")
+name = "Mies"
+health = 5
+sprite_atlas = Vector2i(0, 0)
+metadata/_custom_type_script = "uid://54kmpynixctn"
+
+[sub_resource type="Resource" id="Resource_xv074"]
+script = ExtResource("6_vpf64")
+name = "Nainen"
+health = 5
+sprite_atlas = Vector2i(1, 0)
+metadata/_custom_type_script = "uid://54kmpynixctn"
 
 [node name="Level" type="Node" node_paths=PackedStringArray("tile_map_controller")]
 script = ExtResource("1_nbgty")
-hex_grid_size = 9
 tile_map_controller = NodePath("TerrainMap")
 
 [node name="TerrainMap" type="Node2D" parent="." node_paths=PackedStringArray("tile_map")]
 unique_name_in_owner = true
+position = Vector2(304, 168)
 script = ExtResource("2_hnne4")
 tile_map = NodePath("TerrainLayer")
 metadata/_edit_group_ = true
@@ -23,22 +38,20 @@ y_sort_enabled = true
 tile_map_data = PackedByteArray("AAAAAAAAAQAAAAIAAAD//wEAAQAAAAcAAAAAAAEAAQAAAAcAAAABAAAAAQAAAAcAAAABAP//AQAAAAcAAAAAAP//AQAAAAcAAAD//wAAAQAAAAcAAAA=")
 tile_set = ExtResource("3_hnne4")
 
-[node name="GameArea" type="TileMapLayer" parent="." node_paths=PackedStringArray("unit_grid")]
+[node name="HighlightLayer" type="TileMapLayer" parent="TerrainMap"]
 tile_set = ExtResource("3_hnne4")
+
+[node name="PlayArea" type="Node2D" parent="."]
 script = ExtResource("4_wcngd")
-unit_grid = NodePath("UnitGrid")
 
-[node name="HighlightLayer" type="TileMapLayer" parent="GameArea"]
-y_sort_enabled = true
-tile_set = ExtResource("3_hnne4")
-
-[node name="UnitGrid" type="Node2D" parent="GameArea"]
+[node name="UnitGrid" type="Node2D" parent="PlayArea"]
 script = ExtResource("4_vpf64")
 size = 5
 
-[node name="TileHighlighter" type="Node" parent="GameArea" node_paths=PackedStringArray("play_area", "highlight_layer")]
-script = ExtResource("6_vpf64")
-play_area = NodePath("..")
-highlight_layer = NodePath("../HighlightLayer")
-tile = Vector2i(0, 8)
-metadata/_custom_type_script = "uid://bkc2vx5p7mnpa"
+[node name="Unit" parent="." instance=ExtResource("5_hnne4")]
+position = Vector2(312, 168)
+stats = SubResource("Resource_wcngd")
+
+[node name="Unit2" parent="." instance=ExtResource("5_hnne4")]
+position = Vector2(216, 128)
+stats = SubResource("Resource_xv074")

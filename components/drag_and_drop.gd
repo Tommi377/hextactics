@@ -28,7 +28,6 @@ func _process(_delta: float) -> void:
 func _end_dragging() -> void:
 	dragging = false
 	target.remove_from_group("dragging")
-	target.z_index = 0
 	
 func _cancel_dragging() -> void:
 	_end_dragging()

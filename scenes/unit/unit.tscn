@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" uid="uid://b3244lwnlwmd7" path="res://components/outline_higlighter.gd" id="1_bhlit"]
 [ext_resource type="Script" uid="uid://brvoenrgkgosj" path="res://scenes/unit/unit.gd" id="1_fvc8g"]
-[ext_resource type="Texture2D" uid="uid://b84x6kn2rg57o" path="res://assets/sprites/tiles/alienBeige.png" id="3_bhlit"]
+[ext_resource type="Texture2D" uid="uid://bmnl6v3ne4yrj" path="res://assets/sprites/32rogues/rogues.png" id="3_vgvef"]
 [ext_resource type="Script" uid="uid://b8r0311h50eao" path="res://components/drag_and_drop.gd" id="4_bhlit"]
 [ext_resource type="Shader" uid="uid://bskbc3ju4sdt1" path="res://assets/shaders/outline.gdshader" id="4_vgvef"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3po7s"]
+resource_local_to_scene = true
 shader = ExtResource("4_vgvef")
 shader_parameter/line_colour = Color(1, 1, 1, 1)
 shader_parameter/line_thickness = 0
@@ -15,7 +16,7 @@ shader_parameter/line_thickness = 0
 size = Vector2(50, 75)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fmv3f"]
-bg_color = Color(1, 0, 0, 1)
+bg_color = Color(0.352941, 0, 0, 1)
 border_color = Color(1, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fvc8g"]
@@ -24,9 +25,10 @@ border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(1, 0, 0, 1)
+border_color = Color(0.352941, 0, 0, 1)
 
 [node name="Unit" type="Area2D"]
+z_index = 1
 script = ExtResource("1_fvc8g")
 metadata/_edit_group_ = true
 
@@ -35,7 +37,9 @@ material = SubResource("ShaderMaterial_3po7s")
 
 [node name="Sprite" type="Sprite2D" parent="Visuals"]
 unique_name_in_owner = true
-texture = ExtResource("3_bhlit")
+texture = ExtResource("3_vgvef")
+region_enabled = true
+region_rect = Rect2(32, 96, 32, 32)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -44,10 +48,10 @@ shape = SubResource("RectangleShape2D_fvc8g")
 
 [node name="HealthBar" type="ProgressBar" parent="."]
 unique_name_in_owner = true
-offset_left = -25.0
-offset_top = -49.0
-offset_right = 25.0
-offset_bottom = -42.0
+offset_left = -10.0
+offset_top = -21.0
+offset_right = 10.0
+offset_bottom = -18.0
 theme_override_styles/background = SubResource("StyleBoxFlat_fmv3f")
 theme_override_styles/fill = SubResource("StyleBoxFlat_fvc8g")
 value = 14.33

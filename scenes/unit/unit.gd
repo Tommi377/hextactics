@@ -2,6 +2,7 @@
 class_name Unit extends Area2D
 
 @export var stats: UnitStats : set = set_stat
+@export var default_z_index := 1
 
 @onready var sprite: Sprite2D = %Sprite
 @onready var health_bar: ProgressBar = %HealthBar
@@ -22,7 +23,7 @@ func set_stat(value: UnitStats) -> void:
 	if not is_node_ready():
 		await ready
 		
-	sprite.texture = value.sprite
+	sprite.region_rect.position = Vector2(value.sprite_atlas) * 32
 
 
 func _on_mouse_entered() -> void:
@@ -30,7 +31,7 @@ func _on_mouse_entered() -> void:
 		return
 	
 	outline_highlighter.highlight()
-	z_index = 1
+	z_index = default_z_index + 1
 
 
 func _on_mouse_exited() -> void:
@@ -38,7 +39,7 @@ func _on_mouse_exited() -> void:
 		return
 		
 	outline_highlighter.clear_highlight()
-	z_index = 0
+	z_index = default_z_index
 
 func _on_drag_started() -> void:
 	pass

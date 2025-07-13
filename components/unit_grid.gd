@@ -2,14 +2,17 @@ class_name UnitGrid extends Node
 
 signal unit_grid_changed
 
-@export var size: int
+@export var size: int = 7
+var limit := size / 2
 
 var units: Dictionary
 
 func _ready() -> void:
-	for q in range(-size / 2, size / 2 + 1):
-		for r in range(-size / 2, size / 2 + 1):
-			if abs(q + r) > size / 2:
+	@warning_ignore("integer_division")
+	var limit: int = size / 2
+	for q in range(-limit, limit + 1):
+		for r in range(-limit, limit + 1):
+			if abs(q + r) > limit:
 				continue
 			units[Vector2i(q, r)] = null
 

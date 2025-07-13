@@ -140,8 +140,8 @@ texture_region_size = Vector2i(65, 89)
 3:4/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_0seue")
 
 [resource]
-tile_shape = 1
+tile_shape = 3
 tile_layout = 5
-tile_size = Vector2i(65, 101)
+tile_size = Vector2i(65, 65)
 navigation_layer_0/layers = 1
 sources/0 = SubResource("TileSetAtlasSource_47enk")

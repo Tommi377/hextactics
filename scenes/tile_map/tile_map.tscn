@@ -1,16 +1,13 @@
-[gd_scene load_steps=4 format=4 uid="uid://w0cr3nyrircj"]
+[gd_scene load_steps=3 format=4 uid="uid://w0cr3nyrircj"]
 
 [ext_resource type="TileSet" uid="uid://c2qbr4meeurb3" path="res://scenes/tile_map/tile_map.tres" id="1_c7t34"]
 [ext_resource type="Script" uid="uid://sshvq7o6fv5a" path="res://scenes/tile_map/tile_map_controller.gd" id="1_vnldp"]
-[ext_resource type="Script" uid="uid://d0kkkk38fvxqv" path="res://scenes/tile_map/tile_map.gd" id="2_v21o0"]
 
-[node name="TileMap" type="Node2D"]
+[node name="TileMap" type="Node2D" node_paths=PackedStringArray("tile_map")]
 script = ExtResource("1_vnldp")
+tile_map = NodePath("TileMapLayer")
 metadata/_edit_group_ = true
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
-unique_name_in_owner = true
 tile_map_data = PackedByteArray("AAD//wAAAAADAAMAAAD//wEAAAADAAMAAAD+/wEAAAADAAMAAAAAAAAAAAADAAMAAAAAAP//AAADAAMAAAD/////AAADAAMAAAD+/wAAAAADAAMAAAA=")
 tile_set = ExtResource("1_c7t34")
-script = ExtResource("2_v21o0")
-metadata/_edit_lock_ = true

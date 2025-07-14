@@ -23,9 +23,8 @@ func _set_enabled(new_value: bool) -> void:
 	enabled = new_value
 
 	if not enabled and play_area:
-		highlight_layer.clear
+		highlight_layer.clear()
 
 func _update_tile(selected_tile: Vector2i) -> void:
-	print(selected_tile)
 	highlight_layer.clear()
 	highlight_layer.set_cell(selected_tile, source_id, tile)

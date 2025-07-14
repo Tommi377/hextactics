@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://f4e3kupbm74j"]
+[gd_scene load_steps=11 format=3 uid="uid://f4e3kupbm74j"]
 
 [ext_resource type="Script" uid="uid://b3244lwnlwmd7" path="res://components/outline_higlighter.gd" id="1_bhlit"]
 [ext_resource type="Script" uid="uid://brvoenrgkgosj" path="res://scenes/unit/unit.gd" id="1_fvc8g"]
+[ext_resource type="Resource" uid="uid://dd7ccjx2lwkeq" path="res://data/units/basic.tres" id="2_3po7s"]
 [ext_resource type="Texture2D" uid="uid://bmnl6v3ne4yrj" path="res://assets/sprites/32rogues/rogues.png" id="3_vgvef"]
 [ext_resource type="Script" uid="uid://b8r0311h50eao" path="res://components/drag_and_drop.gd" id="4_bhlit"]
 [ext_resource type="Shader" uid="uid://bskbc3ju4sdt1" path="res://assets/shaders/outline.gdshader" id="4_vgvef"]
@@ -13,7 +14,7 @@ shader_parameter/line_colour = Color(1, 1, 1, 1)
 shader_parameter/line_thickness = 0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fvc8g"]
-size = Vector2(50, 75)
+size = Vector2(32, 32)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fmv3f"]
 bg_color = Color(0.352941, 0, 0, 1)
@@ -27,31 +28,33 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.352941, 0, 0, 1)
 
-[node name="Unit" type="Area2D"]
+[node name="Unit" type="Area2D" groups=["units"]]
 z_index = 1
 script = ExtResource("1_fvc8g")
+stats = ExtResource("2_3po7s")
 metadata/_edit_group_ = true
 
 [node name="Visuals" type="CanvasGroup" parent="."]
 material = SubResource("ShaderMaterial_3po7s")
+position = Vector2(0, -8)
 
 [node name="Sprite" type="Sprite2D" parent="Visuals"]
 unique_name_in_owner = true
 texture = ExtResource("3_vgvef")
 region_enabled = true
-region_rect = Rect2(32, 96, 32, 32)
+region_rect = Rect2(64, 64, 32, 32)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2(0, -4)
+position = Vector2(0, -8)
 shape = SubResource("RectangleShape2D_fvc8g")
 
 [node name="HealthBar" type="ProgressBar" parent="."]
 unique_name_in_owner = true
+z_index = 10
 offset_left = -10.0
-offset_top = -21.0
+offset_top = -30.0
 offset_right = 10.0
-offset_bottom = -18.0
+offset_bottom = -27.0
 theme_override_styles/background = SubResource("StyleBoxFlat_fmv3f")
 theme_override_styles/fill = SubResource("StyleBoxFlat_fvc8g")
 value = 14.33

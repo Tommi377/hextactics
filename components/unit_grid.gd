@@ -2,23 +2,35 @@ class_name UnitGrid extends Node
 
 signal unit_grid_changed
 
-@export var size: int = 7
-var limit := size / 2
+@onready var level: Level = $"../.."
+@warning_ignore("integer_division")
+@onready var limit := level.hex_grid_size / 2
 
-var units: Dictionary
+var units: Dictionary[Vector2i, Unit]
 
 func _ready() -> void:
-	@warning_ignore("integer_division")
-	var limit: int = size / 2
 	for q in range(-limit, limit + 1):
 		for r in range(-limit, limit + 1):
 			if abs(q + r) > limit:
 				continue
 			units[Vector2i(q, r)] = null
 
-func add_unit(coord: Vector2i, unit: Node) -> void:
+func get_unit(coord: Vector2i) -> Unit:
+	return units[coord]
+
+func add_unit(coord: Vector2i, unit: Unit) -> void:
 	units[coord] = unit
 	unit_grid_changed.emit()
+	
+func remove_unit(coord: Vector2i) -> bool:
+	var unit := units[coord]
+	
+	if not unit:
+		return false
+	
+	units[coord] = null
+	unit_grid_changed.emit()
+	return true
 	
 func is_occupied(coord: Vector2i) -> bool:
 	return units[coord] != null

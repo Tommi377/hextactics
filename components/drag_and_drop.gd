@@ -2,7 +2,7 @@ class_name DragAndDrop extends Node
 
 signal drag_canceled(starting_position: Vector2)
 signal drag_started
-signal dropped(starting_position: Vector2)
+signal drag_dropped(starting_position: Vector2)
 
 @export var enabled: bool = true
 @export var target: Area2D
@@ -43,7 +43,7 @@ func _start_dragging() -> void:
 
 func _drop() -> void:
 	_end_dragging()
-	dropped.emit(starting_position)
+	drag_dropped.emit(starting_position)
 	
 func _on_target_input_event(_viewport: Node, event: InputEvent) -> void:
 	if not enabled:

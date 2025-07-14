@@ -1,4 +1,4 @@
-extends Node
+class_name Level extends Node
 
 @export var hex_grid_size: int = 5
 @export var tile_map_controller: TileMapController

@@ -20,6 +20,7 @@ func get_unit(coord: Vector2i) -> Unit:
 
 func add_unit(coord: Vector2i, unit: Unit) -> void:
 	units[coord] = unit
+	unit.tree_exited.connect(_on_unit_tree_exited.bind(unit, coord))
 	unit_grid_changed.emit()
 	
 func remove_unit(coord: Vector2i) -> bool:
@@ -28,6 +29,7 @@ func remove_unit(coord: Vector2i) -> bool:
 	if not unit:
 		return false
 	
+	unit.tree_exited.disconnect(_on_unit_tree_exited)
 	units[coord] = null
 	unit_grid_changed.emit()
 	return true
@@ -54,3 +56,8 @@ func get_all_units() -> Array[Unit]:
 			unit_array.append(unit)
 			
 	return unit_array
+
+func _on_unit_tree_exited(unit: Unit, tile: Vector2i) -> void:
+	if unit.is_queued_for_deletion():
+		units[tile] = null
+		unit_grid_changed.emit()

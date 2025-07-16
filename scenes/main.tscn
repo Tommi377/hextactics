@@ -2,14 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://fiq3xd1h5emu" path="res://scenes/level/level.tscn" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://f4e3kupbm74j" path="res://scenes/unit/unit.tscn" id="2_0wfyh"]
+[ext_resource type="Resource" uid="uid://ys1af3smjdu7" path="res://data/units/man.tres" id="2_jyhfs"]
 [ext_resource type="Script" uid="uid://54kmpynixctn" path="res://data/units/unit_stats.gd" id="3_sugp2"]
-
-[sub_resource type="Resource" id="Resource_jyhfs"]
-script = ExtResource("3_sugp2")
-name = "Mies"
-health = 6
-sprite_atlas = Vector2i(0, 0)
-metadata/_custom_type_script = "uid://54kmpynixctn"
 
 [sub_resource type="Resource" id="Resource_sugp2"]
 script = ExtResource("3_sugp2")
@@ -22,7 +16,7 @@ metadata/_custom_type_script = "uid://54kmpynixctn"
 
 [node name="Unit" parent="." instance=ExtResource("2_0wfyh")]
 position = Vector2(14, -14)
-stats = SubResource("Resource_jyhfs")
+stats = ExtResource("2_jyhfs")
 
 [node name="Unit2" parent="." instance=ExtResource("2_0wfyh")]
 position = Vector2(57, 9)

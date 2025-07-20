@@ -5,9 +5,6 @@ extends Node2D
 @export var path_colors: Array[Color]
 @export var game_area: PlayArea
 
-@onready var unit: Unit = $"../Unit"
-@onready var unit2: Unit = $"../Unit2"
-
 var paths := {}
 
 func _ready() -> void:
@@ -22,10 +19,10 @@ func _draw() -> void:
 			draw_rect(Rect2(pos, Vector2(4, 4)), color)
 			
 	
-	#var i := 0
-	#for path in paths.values():
-		#draw_path(path, path_colors[wrapi(i, 0, path_colors.size()-1)])
-		#i += 1
+	var i := 0
+	for path in paths.values():
+		draw_path(path, path_colors[wrapi(i, 0, path_colors.size()-1)])
+		i += 1
 
 
 func _input(event: InputEvent) -> void:

@@ -6,6 +6,8 @@ signal unit_grid_changed
 @warning_ignore("integer_division")
 @onready var limit := level.hex_grid_size / 2
 
+@onready var game_area: PlayArea = %GameArea
+
 var units: Dictionary[Vector2i, Node]
 
 func _ready() -> void:
@@ -20,6 +22,7 @@ func get_unit(coord: Vector2i) -> Node:
 
 func add_unit(coord: Vector2i, unit: Node) -> void:
 	units[coord] = unit
+	unit.global_position = game_area.get_global_from_tile(coord)
 	unit.tree_exited.connect(_on_unit_tree_exited.bind(unit, coord))
 	unit_grid_changed.emit()
 	

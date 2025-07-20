@@ -6,7 +6,7 @@ signal unit_grid_changed
 @warning_ignore("integer_division")
 @onready var limit := level.hex_grid_size / 2
 
-var units: Dictionary[Vector2i, Unit]
+var units: Dictionary[Vector2i, Node]
 
 func _ready() -> void:
 	for q in range(-limit, limit + 1):
@@ -15,10 +15,10 @@ func _ready() -> void:
 				continue
 			units[Vector2i(q, r)] = null
 
-func get_unit(coord: Vector2i) -> Unit:
+func get_unit(coord: Vector2i) -> Node:
 	return units[coord]
 
-func add_unit(coord: Vector2i, unit: Unit) -> void:
+func add_unit(coord: Vector2i, unit: Node) -> void:
 	units[coord] = unit
 	unit.tree_exited.connect(_on_unit_tree_exited.bind(unit, coord))
 	unit_grid_changed.emit()
@@ -56,8 +56,17 @@ func get_all_units() -> Array[Unit]:
 			unit_array.append(unit)
 			
 	return unit_array
+	
+func get_all_occupied() -> Array[Vector2i]:
+	var tile_array: Array[Vector2i] = []
+	
+	for tile: Vector2i in units.keys():
+		if units[tile]:
+			tile_array.append(tile)
+			
+	return tile_array
 
-func _on_unit_tree_exited(unit: Unit, tile: Vector2i) -> void:
+func _on_unit_tree_exited(unit: Node, tile: Vector2i) -> void:
 	if unit.is_queued_for_deletion():
 		units[tile] = null
 		unit_grid_changed.emit()

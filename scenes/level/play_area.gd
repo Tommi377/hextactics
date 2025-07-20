@@ -13,9 +13,7 @@ func get_global_from_tile(tile: Vector2i) -> Vector2:
 	return to_global(map_to_local(tile))
 	
 func get_hovered_tile() -> Vector2i:
-	print("hovered: ", local_to_map(get_local_mouse_position()))
 	return local_to_map(get_local_mouse_position())
 
 func is_tile_in_bounds(tile: Vector2) -> bool:
-	print(tile, ", bounds: ", HexUtility.hex_cell_distance(tile, Vector2.ZERO))
 	return HexUtility.hex_cell_distance(tile, Vector2.ZERO) <= unit_grid.limit

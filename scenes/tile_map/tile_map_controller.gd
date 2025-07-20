@@ -11,4 +11,5 @@ func generate_tile_map(size: int):
 		for r in range(-limit, limit + 1):
 			if abs(q + r) > limit:
 				continue
-			tile_map.set_cell(Vector2(q, r), 1, Vector2(0, rng.randi_range(0, 7)))
+			var random_tile = rng.randi_range(0, 7)
+			tile_map.set_cell(Vector2(q, r), 1, Vector2(0, 2))

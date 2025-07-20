@@ -7,4 +7,5 @@ script = ExtResource("1_ty4hs")
 name = "Mies"
 health = 6
 sprite_atlas = Vector2i(0, 0)
+team = 0
 metadata/_custom_type_script = "uid://54kmpynixctn"

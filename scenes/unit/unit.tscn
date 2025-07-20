@@ -42,7 +42,7 @@ position = Vector2(0, -8)
 unique_name_in_owner = true
 texture = ExtResource("3_vgvef")
 region_enabled = true
-region_rect = Rect2(64, 64, 32, 32)
+region_rect = Rect2(128, 64, 32, 32)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -8)
@@ -55,6 +55,7 @@ offset_left = -10.0
 offset_top = -30.0
 offset_right = 10.0
 offset_bottom = -27.0
+mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_fmv3f")
 theme_override_styles/fill = SubResource("StyleBoxFlat_fvc8g")
 value = 14.33

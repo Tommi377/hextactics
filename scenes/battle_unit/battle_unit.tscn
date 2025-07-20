@@ -1,0 +1,79 @@
+[gd_scene load_steps=11 format=3 uid="uid://dgbyd24tkvr8j"]
+
+[ext_resource type="Shader" uid="uid://bskbc3ju4sdt1" path="res://assets/shaders/outline.gdshader" id="1_6qs4s"]
+[ext_resource type="Script" uid="uid://b7nlfskxfj65w" path="res://scenes/battle_unit/battle_unit.gd" id="1_ubtrb"]
+[ext_resource type="Resource" uid="uid://ys1af3smjdu7" path="res://data/units/man.tres" id="2_hcn7a"]
+[ext_resource type="Texture2D" uid="uid://bmnl6v3ne4yrj" path="res://assets/sprites/32rogues/rogues.png" id="2_ubtrb"]
+[ext_resource type="Script" uid="uid://bcmkvu0aoe4vy" path="res://scenes/battle_unit/unit_ai/unit_ai.gd" id="5_tah2m"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hcn7a"]
+resource_local_to_scene = true
+shader = ExtResource("1_6qs4s")
+shader_parameter/line_colour = Color(1, 1, 1, 1)
+shader_parameter/line_thickness = 0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tah2m"]
+size = Vector2(32, 32)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmpo8"]
+bg_color = Color(0.352941, 0, 0, 1)
+border_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4s270"]
+bg_color = Color(0, 1, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.352941, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_rmpo8"]
+font_size = 10
+
+[node name="BattleUnit" type="Area2D"]
+script = ExtResource("1_ubtrb")
+stats = ExtResource("2_hcn7a")
+
+[node name="Visuals" type="CanvasGroup" parent="."]
+material = SubResource("ShaderMaterial_hcn7a")
+position = Vector2(0, -8)
+
+[node name="Sprite" type="Sprite2D" parent="Visuals"]
+unique_name_in_owner = true
+texture = ExtResource("2_ubtrb")
+region_enabled = true
+region_rect = Rect2(64, 64, 32, 32)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_tah2m")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+z_index = 10
+offset_left = -10.0
+offset_top = -30.0
+offset_right = 10.0
+offset_bottom = -27.0
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_rmpo8")
+theme_override_styles/fill = SubResource("StyleBoxFlat_4s270")
+value = 14.33
+show_percentage = false
+
+[node name="Label" type="Label" parent="."]
+offset_left = -16.0
+offset_top = 8.0
+offset_right = 16.0
+offset_bottom = 24.0
+text = "State"
+label_settings = SubResource("LabelSettings_rmpo8")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UnitAI" type="Node" parent="." node_paths=PackedStringArray("debug_label", "actor")]
+script = ExtResource("5_tah2m")
+debug_label = NodePath("../Label")
+enabled = null
+actor = NodePath("..")
+metadata/_custom_type_script = "uid://bcmkvu0aoe4vy"

@@ -2,12 +2,13 @@
 class_name Unit extends Area2D
 
 @export var stats: UnitStats : set = set_stat
-@export var default_z_index := 1
 
 @onready var sprite: Sprite2D = %Sprite
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var drag_and_drop: DragAndDrop = $DragAndDrop
 @onready var outline_highlighter: OutlineHighlighter = $OutlineHighlighter
+
+const DEFAULT_Z_INDEX := 1
 
 var is_hovered = false
 
@@ -29,7 +30,7 @@ func _on_mouse_entered() -> void:
 	
 	is_hovered = true
 	outline_highlighter.highlight()
-	z_index = default_z_index + 1
+	z_index = DEFAULT_Z_INDEX + 1
 
 
 func _on_mouse_exited() -> void:
@@ -38,4 +39,4 @@ func _on_mouse_exited() -> void:
 		
 	is_hovered = false
 	outline_highlighter.clear_highlight()
-	z_index = default_z_index
+	z_index = DEFAULT_Z_INDEX

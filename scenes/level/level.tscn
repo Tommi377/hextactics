@@ -1,30 +1,36 @@
-[gd_scene load_steps=8 format=4 uid="uid://fiq3xd1h5emu"]
+[gd_scene load_steps=15 format=4 uid="uid://fiq3xd1h5emu"]
 
 [ext_resource type="Script" uid="uid://byp5bmr7tmia3" path="res://scenes/level/level.gd" id="1_nbgty"]
 [ext_resource type="Script" uid="uid://sshvq7o6fv5a" path="res://scenes/tile_map/tile_map_controller.gd" id="2_hnne4"]
 [ext_resource type="TileSet" uid="uid://ci8cn4gwdnphx" path="res://scenes/level/32_tile_map.tres" id="3_hnne4"]
-[ext_resource type="Script" uid="uid://bn6int3orwv3f" path="res://components/unit_grid.gd" id="4_vpf64"]
-[ext_resource type="Script" uid="uid://c1njj84seuhqc" path="res://components/play_area.gd" id="4_wcngd"]
-[ext_resource type="Script" uid="uid://bkc2vx5p7mnpa" path="res://components/tile_highlighter.gd" id="6_vpf64"]
-[ext_resource type="Script" uid="uid://djgantfe2bx68" path="res://components/unit_mover.gd" id="7_wcngd"]
+[ext_resource type="Script" uid="uid://bn6int3orwv3f" path="res://scenes/level/unit_grid.gd" id="4_vpf64"]
+[ext_resource type="Script" uid="uid://c1njj84seuhqc" path="res://scenes/level/play_area.gd" id="4_wcngd"]
+[ext_resource type="Script" uid="uid://bkc2vx5p7mnpa" path="res://scenes/level/tile_highlighter.gd" id="6_vpf64"]
+[ext_resource type="Script" uid="uid://djgantfe2bx68" path="res://scenes/level/unit_mover.gd" id="7_wcngd"]
+[ext_resource type="Resource" uid="uid://csv2js3r6v4w8" path="res://data/game_state/game_state.tres" id="8_xv074"]
+[ext_resource type="Script" uid="uid://kn73xnthtx7c" path="res://ui/combat_button.gd" id="9_sytrn"]
+[ext_resource type="Script" uid="uid://d2jbqqdtwryj6" path="res://scenes/level/battle_handler.gd" id="9_tf2q7"]
+[ext_resource type="Script" uid="uid://cpdhlddpb8kyb" path="res://components/scene_spawner.gd" id="10_pe1ox"]
+[ext_resource type="PackedScene" uid="uid://dgbyd24tkvr8j" path="res://scenes/battle_unit/battle_unit.tscn" id="11_m0bv2"]
+[ext_resource type="Script" uid="uid://cpn10micrj0ag" path="res://components/debug/nav_debug.gd" id="13_b7m21"]
+[ext_resource type="Script" uid="uid://dyxoew6vtlya" path="res://components/debug/draw_coordinates.gd" id="14_pm6rs"]
 
-[node name="Level" type="Node" node_paths=PackedStringArray("tile_map_controller")]
+[node name="Level" type="Node2D"]
 script = ExtResource("1_nbgty")
 hex_grid_size = 9
-tile_map_controller = NodePath("TerrainMap")
 
-[node name="TerrainMap" type="Node2D" parent="." node_paths=PackedStringArray("tile_map")]
+[node name="TileMapController" type="Node2D" parent="." node_paths=PackedStringArray("tile_map")]
 unique_name_in_owner = true
 script = ExtResource("2_hnne4")
 tile_map = NodePath("TerrainLayer")
-metadata/_edit_group_ = true
 
-[node name="TerrainLayer" type="TileMapLayer" parent="TerrainMap"]
+[node name="TerrainLayer" type="TileMapLayer" parent="TileMapController"]
 y_sort_enabled = true
 tile_map_data = PackedByteArray("AAAAAAAAAQAAAAIAAAD//wEAAQAAAAcAAAAAAAEAAQAAAAcAAAABAAAAAQAAAAcAAAABAP//AQAAAAcAAAAAAP//AQAAAAcAAAD//wAAAQAAAAcAAAA=")
 tile_set = ExtResource("3_hnne4")
 
 [node name="GameArea" type="TileMapLayer" parent="." node_paths=PackedStringArray("unit_grid", "tile_highlighter")]
+unique_name_in_owner = true
 tile_set = ExtResource("3_hnne4")
 script = ExtResource("4_wcngd")
 unit_grid = NodePath("UnitGrid")
@@ -37,9 +43,12 @@ tile_set = ExtResource("3_hnne4")
 [node name="UnitGrid" type="Node2D" parent="GameArea"]
 script = ExtResource("4_vpf64")
 
+[node name="BattleUnitGrid" type="Node2D" parent="GameArea"]
+unique_name_in_owner = true
+script = ExtResource("4_vpf64")
+
 [node name="TileHighlighter" type="Node" parent="GameArea" node_paths=PackedStringArray("play_area", "highlight_layer")]
 script = ExtResource("6_vpf64")
-enabled = false
 play_area = NodePath("..")
 highlight_layer = NodePath("../HighlightLayer")
 tile = Vector2i(0, 8)
@@ -48,4 +57,49 @@ metadata/_custom_type_script = "uid://bkc2vx5p7mnpa"
 [node name="UnitMover" type="Node" parent="." node_paths=PackedStringArray("play_areas")]
 script = ExtResource("7_wcngd")
 play_areas = [NodePath("../GameArea")]
+game_state = ExtResource("8_xv074")
 metadata/_custom_type_script = "uid://djgantfe2bx68"
+
+[node name="BattleHandler" type="Node" parent="." node_paths=PackedStringArray("game_area", "normal_unit_grid", "battle_unit_grid")]
+script = ExtResource("9_tf2q7")
+game_state = ExtResource("8_xv074")
+game_area = NodePath("../GameArea")
+normal_unit_grid = NodePath("../GameArea/UnitGrid")
+battle_unit_grid = NodePath("../GameArea/BattleUnitGrid")
+metadata/_custom_type_script = "uid://d2jbqqdtwryj6"
+
+[node name="BattleUnitSceneSpawner" type="Node" parent="BattleHandler"]
+script = ExtResource("10_pe1ox")
+scene = ExtResource("11_m0bv2")
+metadata/_custom_type_script = "uid://cpdhlddpb8kyb"
+
+[node name="LevelUI" type="CanvasLayer" parent="."]
+
+[node name="CombatButton" type="Button" parent="LevelUI" node_paths=PackedStringArray("arena_grid")]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -34.0
+offset_top = -1.0
+offset_right = 35.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Combat"
+script = ExtResource("9_sytrn")
+game_state = ExtResource("8_xv074")
+arena_grid = NodePath("../../GameArea/UnitGrid")
+
+[node name="NavDebug" type="Node2D" parent="." node_paths=PackedStringArray("game_area")]
+position = Vector2(-220.88, -67.805)
+script = ExtResource("13_b7m21")
+color = Color(1, 0, 0, 1)
+path_colors = Array[Color]([Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1)])
+game_area = NodePath("../GameArea")
+metadata/_custom_type_script = "uid://cpn10micrj0ag"
+
+[node name="DrawCoordinates" type="Node2D" parent="." node_paths=PackedStringArray("game_area")]
+script = ExtResource("14_pm6rs")
+limit = 4
+offset = Vector2(-13, 2)
+game_area = NodePath("../GameArea")

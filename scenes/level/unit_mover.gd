@@ -1,6 +1,7 @@
 class_name UnitMover extends Node
 
 @export var play_areas: Array[PlayArea]
+@export var game_state: GameState
 
 func _ready() -> void:
 	# Testing purposes
@@ -54,6 +55,10 @@ func _on_unit_drag_canceled(starting_position: Vector2, unit: Unit) -> void:
 	
 func _on_unit_drag_dropped(starting_position: Vector2, unit: Unit) -> void:
 	_set_highlighters(false)
+
+	if game_state.current_phase == GameState.Phase.BATTLE:
+		_reset_unit_to_starting_position(starting_position, unit)
+		return
 
 	# Find the play area that mouse is pointing to
 	var found_index = play_areas.find_custom(

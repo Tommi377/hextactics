@@ -17,9 +17,11 @@ signal health_reached_zero
 @export var attack_damage: int
 @export var attack_speed: int
 
+var health: int :
+	set = _set_health
 
-var health: int : set = _set_health
-
+func take_damage(damage: int) -> void:
+	health -= damage
 
 func reset_health() -> void:
 	health = max_health
@@ -29,6 +31,7 @@ func _set_health(value: int) -> void:
 	emit_changed()
 	
 	if health <= 0:
+		health = 0
 		health_reached_zero.emit()
 
 func _to_string() -> String:

@@ -17,15 +17,11 @@ const ENEMY = preload("res://data/units/enemy.tres")
 func _ready() -> void:
 	game_state.changed.connect(_on_game_state_changed)
 	
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("test1"):
-		var unit := get_tree().get_first_node_in_group("enemy_units")
-		unit.queue_free()
-	
 func _clean_up_fight() -> void:
 	get_tree().call_group("player_units", "queue_free")
 	get_tree().call_group("enemy_units", "queue_free")
 	get_tree().call_group("units", "show")
+	SignalBus.combat.fight_cleanup.emit()
 	
 func _prepare_fight() -> void:
 	get_tree().call_group("units", "hide")
@@ -45,28 +41,30 @@ func _prepare_fight() -> void:
 		new_unit.stats.team = UnitStats.Team.ENEMY
 		_setup_battle_unit(unit_coord, new_unit)
 	
+	SignalBus.combat.fight_start.emit()
 	
 func _setup_battle_unit(unit_coord: Vector2i, new_unit: BattleUnit) -> void:
 	new_unit.global_position = game_area.get_global_from_tile(unit_coord)
 
-	new_unit.tree_exited.connect(_on_battle_unit_died)
 	new_unit.action_move.connect(_on_battle_unit_action_move.bind(new_unit))
+	new_unit.action_die.connect(_on_battle_unit_action_die.bind(new_unit))
+	new_unit.tree_exited.connect(_on_battle_unit_tree_exited)
+	
 
 	battle_unit_grid.add_unit(unit_coord, new_unit)
 	turn_handler.add_unit(new_unit)
 	
-func _on_battle_unit_died() -> void:
+func _on_battle_unit_action_die(unit: BattleUnit) -> void:
+	unit.queue_free()
+	
+func _on_battle_unit_tree_exited() -> void:
 	if not is_inside_tree() or game_state.current_phase == GameState.Phase.PREPARATION:
 		return
 		
 	if get_tree().get_node_count_in_group("enemy_units") == 0:
-		print("Player won!")
-		game_state.current_phase = GameState.Phase.PREPARATION
-		player_won.emit()
+		SignalBus.combat.fight_end.emit(UnitStats.Team.PLAYER)
 	elif get_tree().get_node_count_in_group("player_units") == 0:
-		print("Enemy won!")
-		game_state.current_phase = GameState.Phase.PREPARATION
-		enemy_won.emit()
+		SignalBus.combat.fight_end.emit(UnitStats.Team.ENEMY)
 	
 func _on_battle_unit_action_move(target: Vector2i, unit: BattleUnit) -> void:
 	battle_unit_grid.remove_unit(unit.coordinate)

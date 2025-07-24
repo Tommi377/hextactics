@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://fiq3xd1h5emu"]
+[gd_scene load_steps=18 format=4 uid="uid://fiq3xd1h5emu"]
 
 [ext_resource type="Script" uid="uid://byp5bmr7tmia3" path="res://scenes/level/level.gd" id="1_nbgty"]
 [ext_resource type="Script" uid="uid://sshvq7o6fv5a" path="res://scenes/tile_map/tile_map_controller.gd" id="2_hnne4"]
@@ -10,11 +10,15 @@
 [ext_resource type="Resource" uid="uid://csv2js3r6v4w8" path="res://data/game_state/game_state.tres" id="8_xv074"]
 [ext_resource type="Script" uid="uid://kn73xnthtx7c" path="res://ui/combat_button.gd" id="9_sytrn"]
 [ext_resource type="Script" uid="uid://d2jbqqdtwryj6" path="res://scenes/level/battle_handler.gd" id="9_tf2q7"]
+[ext_resource type="FontFile" uid="uid://b163b06lpd07u" path="res://assets/fonts/Abaddon Light.ttf" id="10_pm6rs"]
+[ext_resource type="Script" uid="uid://bc8qfwst3u5d0" path="res://scenes/level/pre_combat_buttons.gd" id="10_vrc4q"]
 [ext_resource type="Script" uid="uid://cpn10micrj0ag" path="res://components/debug/nav_debug.gd" id="13_b7m21"]
 [ext_resource type="Script" uid="uid://bi1e4gkebkq3p" path="res://scenes/level/turn_handler.gd" id="13_vrc4q"]
+[ext_resource type="Script" uid="uid://ca6y88mdoiagq" path="res://scenes/level/after_combat_buttons.gd" id="13_x4oov"]
+[ext_resource type="Script" uid="uid://b0fhvjikktxql" path="res://scenes/level/end_combat_button.gd" id="14_ivku7"]
 [ext_resource type="Script" uid="uid://dyxoew6vtlya" path="res://components/debug/draw_coordinates.gd" id="14_pm6rs"]
 
-[node name="Level" type="Node2D"]
+[node name="HuntLevel" type="Node2D"]
 script = ExtResource("1_nbgty")
 hex_grid_size = 9
 
@@ -70,20 +74,52 @@ metadata/_custom_type_script = "uid://d2jbqqdtwryj6"
 
 [node name="LevelUI" type="CanvasLayer" parent="."]
 
-[node name="CombatButton" type="Button" parent="LevelUI" node_paths=PackedStringArray("arena_grid")]
+[node name="PreCombatButtons" type="HBoxContainer" parent="LevelUI"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -34.0
-offset_top = -1.0
-offset_right = 35.0
-offset_bottom = 30.0
+offset_left = -27.0
+offset_right = 27.0
+offset_bottom = 40.0
 grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("10_vrc4q")
+
+[node name="CombatButton" type="Button" parent="LevelUI/PreCombatButtons" node_paths=PackedStringArray("arena_grid")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("10_pm6rs")
 theme_override_font_sizes/font_size = 12
-text = "Combat"
+text = "Start
+Combat"
 script = ExtResource("9_sytrn")
 game_state = ExtResource("8_xv074")
-arena_grid = NodePath("../../GameArea/UnitGrid")
+arena_grid = NodePath("../../../GameArea/UnitGrid")
+
+[node name="AfterCombatButtons" type="HBoxContainer" parent="LevelUI"]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -22.5
+offset_right = 22.5
+offset_bottom = 36.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("13_x4oov")
+
+[node name="EndCombatButton" type="Button" parent="LevelUI/AfterCombatButtons"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("10_pm6rs")
+theme_override_font_sizes/font_size = 12
+text = "End
+Combat"
+script = ExtResource("14_ivku7")
+game_state = ExtResource("8_xv074")
 
 [node name="TurnHandler" type="Node" parent="." node_paths=PackedStringArray("timer")]
 script = ExtResource("13_vrc4q")
@@ -94,15 +130,19 @@ metadata/_custom_type_script = "uid://bi1e4gkebkq3p"
 wait_time = 0.3
 autostart = true
 
-[node name="NavDebug" type="Node2D" parent="." node_paths=PackedStringArray("game_area", "battle_grid")]
+[node name="Debug" type="Node" parent="."]
+
+[node name="NavDebug" type="Node2D" parent="Debug" node_paths=PackedStringArray("game_area", "battle_grid")]
+visible = false
 position = Vector2(-220.88, -67.805)
 script = ExtResource("13_b7m21")
-game_area = NodePath("../GameArea")
-battle_grid = NodePath("../GameArea/BattleUnitGrid")
+game_area = NodePath("../../GameArea")
+battle_grid = NodePath("../../GameArea/BattleUnitGrid")
 metadata/_custom_type_script = "uid://cpn10micrj0ag"
 
-[node name="DrawCoordinates" type="Node2D" parent="." node_paths=PackedStringArray("game_area")]
+[node name="DrawCoordinates" type="Node2D" parent="Debug" node_paths=PackedStringArray("game_area")]
+visible = false
 script = ExtResource("14_pm6rs")
 limit = 4
 offset = Vector2(-13, 2)
-game_area = NodePath("../GameArea")
+game_area = NodePath("../../GameArea")

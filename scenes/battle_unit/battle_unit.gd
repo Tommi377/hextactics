@@ -2,6 +2,7 @@ class_name BattleUnit
 extends Area2D
 
 signal action_move(new_tile: Vector2i)
+signal action_die()
 
 const my_scene: PackedScene = preload("res://scenes/battle_unit/battle_unit.tscn")
 
@@ -14,16 +15,22 @@ const my_scene: PackedScene = preload("res://scenes/battle_unit/battle_unit.tscn
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var animation_player: AnimationPlayer = %AnimationPlayer
 
-var coordinate = null
 var game_area: PlayArea
 var battle_unit_grid: UnitGrid
+
+var coordinate = null
+var dead := false
 
 static func instantiate(game_area: PlayArea, unit_grid: UnitGrid) -> BattleUnit:
 	var battle_unit := my_scene.instantiate()
 	battle_unit.game_area = game_area
 	battle_unit.battle_unit_grid = unit_grid
 	unit_grid.add_child(battle_unit)
+	
 	return battle_unit
+
+func take_damage(damage: int) -> void:
+	stats.take_damage(damage)
 
 func set_stat(value: UnitStats) -> void:
 	stats = value
@@ -32,6 +39,7 @@ func set_stat(value: UnitStats) -> void:
 		return
 		
 	stats.reset_health()
+	stats.health_reached_zero.connect(_on_stats_health_reached_zero)
 		
 	sprite.region_rect.position = Vector2(value.sprite_atlas) * 32
 	collision_layer = stats.team + 1
@@ -42,3 +50,7 @@ func tick() -> void:
 	
 func set_coordinate(value: Vector2) -> void:
 	coordinate = value
+
+func _on_stats_health_reached_zero() -> void:
+	dead = true
+	action_die.emit()

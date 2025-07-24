@@ -12,7 +12,7 @@ func add_unit(unit: BattleUnit):
 	turn_queue.push_back(unit)
 	
 func _on_timer_timeout() -> void:
-	var unit: BattleUnit = turn_queue.pop_front()
+	var unit = turn_queue.pop_front()
 	if not unit:
 		return
 

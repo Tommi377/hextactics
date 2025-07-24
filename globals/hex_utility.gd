@@ -12,12 +12,12 @@ func cube_to_axial(cube : Vector3i) -> Vector2i:
 	return Vector2(cube.x, cube.y)
 
 func hex_cell_distance(a: Vector2i, b: Vector2i) -> int:
-	var ac = axial_to_cube(a)
-	var bc = axial_to_cube(b)
+	var ac := axial_to_cube(a)
+	var bc := axial_to_cube(b)
 	return cube_distance(ac, bc)
 
 func get_neighbors(hex: Vector2i) -> Array[Vector2i]:
-	return get_neighbors_pred(hex, func(_hex): return true)
+	return get_neighbors_pred(hex, func(_hex: Vector3i): return true)
 
 func get_neighbors_pred(hex: Vector2i, pred: Callable) -> Array[Vector2i]:
 	var result: Array[Vector2i] = []
@@ -27,12 +27,12 @@ func get_neighbors_pred(hex: Vector2i, pred: Callable) -> Array[Vector2i]:
 			result.push_back(cube_to_axial(neighbor))
 	return result
 
-func cube_subtract(a : Vector3i, b : Vector3i):
-	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z)
+func cube_subtract(a : Vector3i, b : Vector3i) -> Vector3i:
+	return Vector3i(a.x - b.x, a.y - b.y, a.z - b.z)
 
-func cube_add(a : Vector3i, b : Vector3i):
-	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z)
+func cube_add(a : Vector3i, b : Vector3i) -> Vector3i:
+	return Vector3i(a.x + b.x, a.y + b.y, a.z + b.z)
 
-func cube_distance(a : Vector3i, b : Vector3i):
+func cube_distance(a : Vector3i, b : Vector3i) -> float:
 	var vec : Vector3i = cube_subtract(a, b)
 	return (abs(vec.x) + abs(vec.y) + abs(vec.z)) / 2.0

@@ -62,7 +62,7 @@ func _on_unit_drag_dropped(starting_position: Vector2, unit: Unit) -> void:
 
 	# Find the play area that mouse is pointing to
 	var found_index = play_areas.find_custom(
-		func (area: PlayArea): return area.is_tile_in_bounds(area.get_hovered_tile())
+		func(area: PlayArea): return area.is_tile_in_bounds(area.get_hovered_tile())
 	)
 	if found_index == -1:
 		_reset_unit_to_starting_position(starting_position, unit)

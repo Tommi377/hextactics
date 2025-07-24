@@ -22,7 +22,8 @@ func get_unit(coord: Vector2i) -> Node:
 
 func add_unit(coord: Vector2i, unit: Node) -> void:
 	units[coord] = unit
-	unit.global_position = game_area.get_global_from_tile(coord)
+	if unit.has_method("set_coordinate"):
+		unit.set_coordinate(coord)
 	unit.tree_exited.connect(_on_unit_tree_exited.bind(unit, coord))
 	unit_grid_changed.emit()
 	

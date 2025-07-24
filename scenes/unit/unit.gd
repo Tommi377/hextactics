@@ -10,6 +10,7 @@ class_name Unit extends Area2D
 
 const DEFAULT_Z_INDEX := 1
 
+var coordinate = null
 var is_hovered = false
 
 func set_stat(value: UnitStats) -> void:

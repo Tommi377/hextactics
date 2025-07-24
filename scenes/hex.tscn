@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://brpre26hdci2f"]
-
-[ext_resource type="Texture2D" uid="uid://t2kj60852x68" path="res://assets/sprites/tiles/tileGrass.png" id="1_b6u1t"]
-
-[node name="Hex" type="Node2D"]
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_b6u1t")

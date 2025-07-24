@@ -11,7 +11,6 @@ func enter() -> void:
 	actor_unit = actor as BattleUnit
 	_set_target(actor_unit.stats.team)
 
-
 func _set_target(team: UnitStats.Team) -> void:
 	if team == UnitStats.Team.PLAYER:
 		target = actor_unit.get_tree().get_nodes_in_group("enemy_units").pick_random()
@@ -19,36 +18,38 @@ func _set_target(team: UnitStats.Team) -> void:
 		target = actor_unit.get_tree().get_nodes_in_group("player_units").pick_random()
 
 
-func chase() -> void:
+func tick() -> void:
 	if tween and tween.is_running():
+		await tween.finished
+		
+	if not target:
+		_set_target(actor_unit.stats.team)
+		if not target:
+			return
+			
+	if _has_target_in_range():
+		_end_chase()
 		return
-	return 
-	var new_pos: Vector2 = Vector2(-1, -1) # UnitNavigation.get_next_position(actor_unit, target)
 	
-	# nowhere to go this frame so either the unit is stuck or in range
-	if new_pos == Vector2(-1, -1):
-		# we might already have a new target if a unit died or something?
-		if _has_target_in_range():
-			_end_chase()
+	var next_tile = UnitNavigation.get_next_position(actor_unit.coordinate, target.coordinate)
+	if next_tile == null:
 		return
+	
+	actor_unit.action_move.emit(next_tile)
 	
 	tween = actor_unit.create_tween()
 	tween.tween_callback(actor_unit.animation_player.play.bind("move"))
-	tween.tween_property(actor_unit, "global_position", new_pos, 1.0)
-	tween.finished.connect(
-		func():
-			tween.kill()
-			
-			if _has_target_in_range():
-				_end_chase()
-			else:
-				chase()
+	tween.tween_property(
+		actor_unit,
+		"global_position",
+		actor_unit.game_area.get_global_from_tile(next_tile),
+		0.25
 	)
+	tween.finished.connect(tween.kill)
 
 
 func _end_chase() -> void:
 	target_reached.emit(target)
 
-
 func _has_target_in_range() -> bool:
-	return (target.global_position - actor_unit.global_position).length() <= 35.0
+	return HexUtility.hex_cell_distance(actor_unit.coordinate, target.coordinate) <= 1

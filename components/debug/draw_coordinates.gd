@@ -8,6 +8,13 @@ extends Node2D
 		queue_redraw()
 	
 @export var game_area: PlayArea
+@onready var battle_unit_grid: UnitGrid = %BattleUnitGrid
+
+func _ready() -> void:
+	battle_unit_grid.unit_grid_changed.connect(
+		func():
+			queue_redraw()
+	)
 
 func _draw() -> void:
 	@warning_ignore("integer_division")

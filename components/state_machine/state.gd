@@ -2,6 +2,7 @@ class_name State
 extends RefCounted
 
 var actor: Node
+var context: RefCounted
 
 func _init(new_actor: Node) -> void:
 	actor = new_actor

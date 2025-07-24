@@ -1,4 +1,4 @@
-class_name BattleHandler extends Node 
+class_name BattleHandler extends Node
 
 signal player_won
 signal enemy_won
@@ -7,12 +7,10 @@ signal enemy_won
 @export var game_area: PlayArea
 @export var normal_unit_grid: UnitGrid
 @export var battle_unit_grid: UnitGrid
-
-@onready var battle_unit_scene_spawner: SceneSpawner = $BattleUnitSceneSpawner
+@export var turn_handler: TurnHandler
 
 const ENEMY_POSITIONS := [
-	Vector2i(2, 2),
-	Vector2i(-2, -2),
+	Vector2i(0, 0),
 ]
 const ENEMY = preload("res://data/units/enemy.tres")
 
@@ -21,7 +19,7 @@ func _ready() -> void:
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("test1"):
-		var unit = get_tree().get_first_node_in_group("enemy_units")
+		var unit := get_tree().get_first_node_in_group("enemy_units")
 		unit.queue_free()
 	
 func _clean_up_fight() -> void:
@@ -34,27 +32,28 @@ func _prepare_fight() -> void:
 	
 	for unit_coord: Vector2 in normal_unit_grid.get_all_occupied():
 		var unit: Unit = normal_unit_grid.get_unit(unit_coord)
-		var new_unit := battle_unit_scene_spawner.spawn_scene(battle_unit_grid) as BattleUnit
+		var new_unit := BattleUnit.instantiate(game_area, battle_unit_grid)
 		new_unit.add_to_group("player_units")
-		new_unit.stats = unit.stats
+		new_unit.stats = unit.stats.duplicate()
 		new_unit.stats.team = UnitStats.Team.PLAYER
 		_setup_battle_unit(unit_coord, new_unit)
 		
 	for unit_coord: Vector2 in ENEMY_POSITIONS:
-		var new_unit := battle_unit_scene_spawner.spawn_scene(battle_unit_grid) as BattleUnit
+		var new_unit := BattleUnit.instantiate(game_area, battle_unit_grid)
 		new_unit.add_to_group("enemy_units")
-		new_unit.stats = ENEMY
+		new_unit.stats = ENEMY.duplicate()
 		new_unit.stats.team = UnitStats.Team.ENEMY
 		_setup_battle_unit(unit_coord, new_unit)
-		
 	
-	var friendlies := get_tree().get_nodes_in_group("player_units")
-	UnitNavigation.get_next_position(friendlies[0], friendlies[1])
 	
 func _setup_battle_unit(unit_coord: Vector2i, new_unit: BattleUnit) -> void:
 	new_unit.global_position = game_area.get_global_from_tile(unit_coord)
+
 	new_unit.tree_exited.connect(_on_battle_unit_died)
+	new_unit.action_move.connect(_on_battle_unit_action_move.bind(new_unit))
+
 	battle_unit_grid.add_unit(unit_coord, new_unit)
+	turn_handler.add_unit(new_unit)
 	
 func _on_battle_unit_died() -> void:
 	if not is_inside_tree() or game_state.current_phase == GameState.Phase.PREPARATION:
@@ -69,6 +68,11 @@ func _on_battle_unit_died() -> void:
 		game_state.current_phase = GameState.Phase.PREPARATION
 		enemy_won.emit()
 	
+func _on_battle_unit_action_move(target: Vector2i, unit: BattleUnit) -> void:
+	battle_unit_grid.remove_unit(unit.coordinate)
+	battle_unit_grid.add_unit(target, unit)
+	return
+
 func _on_game_state_changed() -> void:
 	match game_state.current_phase:
 		GameState.Phase.PREPARATION:

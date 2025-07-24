@@ -1,15 +1,13 @@
 extends Node
 
-signal path_calculated(points: Array[Vector2i], moving_unit: BattleUnit)
+signal path_calculated(points: Array[Vector2i], current_tile: Vector2i)
 
 var battle_grid: UnitGrid
-var game_area: PlayArea
 var astar: AStar2D
 
-func initialize(grid: UnitGrid, area: PlayArea) -> void:
+func initialize(grid: UnitGrid) -> void:
 	astar = AStar2D.new()
 	battle_grid = grid
-	game_area = area
 	
 	var all_points = battle_grid.units.keys()
 	
@@ -30,24 +28,18 @@ func update_occupied_tiles() -> void:
 	for tile in battle_grid.units.keys():
 		astar.set_point_disabled(astar.get_closest_point(tile, true), battle_grid.is_occupied(tile))
 	
-func get_next_position(moving_unit: BattleUnit, target_unit: BattleUnit) -> Vector2:
-	var current_tile := game_area.get_tile_from_global(moving_unit.global_position)
-	var target_tile := game_area.get_tile_from_global(target_unit.global_position)
-	
+func get_next_position(current_tile: Vector2i, target_tile: Vector2i):
 	var current_id := astar.get_closest_point(current_tile, true)
 	var target_id := astar.get_closest_point(target_tile, true)
 	
 	astar.set_point_disabled(current_id, false)
 	var path := astar.get_point_path(current_id, target_id, true)
-	path_calculated.emit(path, moving_unit)
+	astar.set_point_disabled(current_id, true)
+
+	path_calculated.emit(path, current_tile)
 	
 	if path.size() == 1 and Vector2i(path[0]) == current_tile:
 		astar.set_point_disabled(current_id, true)
-		return Vector2(-1, -1)
+		return null
 		
-	var next_tile := path[1]
-	battle_grid.remove_unit(current_tile)
-	battle_grid.add_unit(next_tile, moving_unit)
-	astar.set_point_disabled(astar.get_closest_point(next_tile, true), true)
-	
-	return game_area.get_global_from_tile(next_tile)
+	return path[1]

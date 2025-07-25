@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1dqohdjb4sif"]
+
+[ext_resource type="StyleBox" uid="uid://b2wo2qtjgwhfr" path="res://scenes/inventory/inventory_slot/slot_default.tres" id="1_fb4w1"]
+[ext_resource type="Script" uid="uid://bukkr4odlt3to" path="res://scenes/inventory/inventory_slot.gd" id="1_x8dhv"]
+
+[node name="InventorySlot" type="Panel"]
+custom_minimum_size = Vector2(32, 32)
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("1_fb4w1")
+script = ExtResource("1_x8dhv")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

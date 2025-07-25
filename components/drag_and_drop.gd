@@ -1,7 +1,7 @@
 class_name DragAndDrop extends Node
 
-signal drag_canceled(starting_position: Vector2)
 signal drag_started
+signal drag_canceled(starting_position: Vector2)
 signal drag_dropped(starting_position: Vector2)
 
 @export var enabled: bool = true
@@ -48,7 +48,7 @@ func _drop() -> void:
 func _on_target_input_event(_viewport: Node, event: InputEvent) -> void:
 	if not enabled:
 		return
-		
+
 	var dragging_object := get_tree().get_first_node_in_group("dragging")
 	
 	if not dragging and dragging_object:

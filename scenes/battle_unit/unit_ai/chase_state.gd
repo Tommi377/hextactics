@@ -2,6 +2,7 @@ class_name ChaseState
 extends State
 
 signal target_reached(target: BattleUnit)
+const MOVE_TIME = 0.25
 
 var actor_unit: BattleUnit
 var target: BattleUnit
@@ -43,7 +44,7 @@ func tick() -> void:
 		actor_unit,
 		"global_position",
 		actor_unit.game_area.get_global_from_tile(next_tile),
-		0.25
+		MOVE_TIME
 	)
 	tween.finished.connect(tween.kill)
 

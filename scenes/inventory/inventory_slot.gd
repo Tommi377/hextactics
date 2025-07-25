@@ -8,9 +8,6 @@ const MAT_SLOT_HOVER = preload("res://scenes/inventory/inventory_slot/slot_hover
 
 enum States {DEFAULT, TAKEN, FREE}
 
-signal slot_entered(slot: InventorySlot)
-signal slot_exited(slot: InventorySlot)
-
 var coordinate: Vector2i
 var is_hovering := false
 var state := States.DEFAULT
@@ -24,13 +21,11 @@ static func create_instance(parent: Node, coordinate: Vector2i) -> InventorySlot
 	return inventorySlot
 
 
-func _on_mouse_entered() -> void:
+func hover() -> void:
 	is_hovering = true
 	add_theme_stylebox_override('panel', MAT_SLOT_HOVER)
-	slot_entered.emit(self)
 
 
-func _on_mouse_exited() -> void:
+func unhover() -> void:
 	is_hovering = false
 	add_theme_stylebox_override('panel', MAT_SLOT_DEFAULT)
-	slot_exited.emit(self)

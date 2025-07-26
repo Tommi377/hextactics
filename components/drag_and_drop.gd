@@ -7,6 +7,9 @@ signal drag_dropped(starting_position: Vector2)
 @export var enabled: bool = true
 @export var target: Area2D
 
+@export var start_drag_action := "select"
+@export var cancel_drag_action := "cancel_drag"
+
 var starting_position: Vector2
 var offset := Vector2.ZERO
 var dragging := false
@@ -16,9 +19,9 @@ func _ready() -> void:
 	target.input_event.connect(_on_target_input_event.unbind(1))
 
 func _input(event: InputEvent) -> void:
-	if dragging and event.is_action_pressed("cancel_drag"):
+	if dragging and event.is_action_pressed(cancel_drag_action):
 		_cancel_dragging()
-	elif dragging and event.is_action_released("select"):
+	elif dragging and event.is_action_released(start_drag_action):
 		_drop()
 
 func _process(_delta: float) -> void:
@@ -54,5 +57,5 @@ func _on_target_input_event(_viewport: Node, event: InputEvent) -> void:
 	if not dragging and dragging_object:
 		return
 		
-	if not dragging and event.is_action_pressed("select"):
+	if not dragging and event.is_action_pressed(start_drag_action):
 		_start_dragging()

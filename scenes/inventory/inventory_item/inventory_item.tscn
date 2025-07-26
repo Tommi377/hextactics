@@ -1,19 +1,32 @@
-[gd_scene load_steps=5 format=3 uid="uid://bhkno77mrokoq"]
+[gd_scene load_steps=7 format=3 uid="uid://bhkno77mrokoq"]
 
 [ext_resource type="Script" uid="uid://ch55te8wqraxf" path="res://scenes/inventory/inventory_item/inventory_item.gd" id="1_nb0um"]
+[ext_resource type="Resource" uid="uid://drrinpkrfddx6" path="res://scenes/inventory/item_data/O_piece.tres" id="2_c5ikj"]
 [ext_resource type="Texture2D" uid="uid://dd8xlw1vqrrjn" path="res://assets/tetris_pieces.png" id="2_pradd"]
 [ext_resource type="Script" uid="uid://b8r0311h50eao" path="res://components/drag_and_drop.gd" id="3_aubwb"]
+[ext_resource type="Script" uid="uid://cowel8vucfo66" path="res://components/random_sprite_setter.gd" id="3_k35mr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k35mr"]
 size = Vector2(32, 32)
 
 [node name="InventoryItem" type="Area2D"]
 script = ExtResource("1_nb0um")
+item_data = ExtResource("2_c5ikj")
 
 [node name="DragAndDrop" type="Node" parent="." node_paths=PackedStringArray("target")]
 script = ExtResource("3_aubwb")
 target = NodePath("..")
 metadata/_custom_type_script = "uid://b8r0311h50eao"
+
+[node name="RandomSpriteSetter" type="Node" parent="." node_paths=PackedStringArray("sprite")]
+script = ExtResource("3_k35mr")
+max_x = 4
+max_y = 3
+bad_coords = Dictionary[Vector2i, bool]({
+Vector2i(2, 2): true,
+Vector2i(3, 2): true
+})
+sprite = NodePath("../CanvasGroup/Sprite2D")
 
 [node name="CanvasGroup" type="CanvasGroup" parent="."]
 

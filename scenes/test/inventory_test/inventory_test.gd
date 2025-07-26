@@ -8,7 +8,7 @@ extends Node
 
 func _ready() -> void:
 	register_item(inventory_item)
-	
+
 func spawn_random_item() -> void:
 	var item_data := items.pick_random() as ItemData
 	var item := InventoryItem.create_instance(self, item_data, randi())

@@ -9,6 +9,8 @@ const GRID_SIZE_PX = 32
 const GRID_CENTER_OFFSET_PX = Vector2(GRID_SIZE_PX / 2, GRID_SIZE_PX / 2)
 
 var slot_map: Dictionary[Vector2i, InventorySlot]
+var item_to_slots: Dictionary
+
 var held_item: InventoryItem
 var hovered_slots: Array[InventorySlot] = []
 
@@ -20,13 +22,16 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if held_item:
 		_unhover_all_slots()
-		var can_place := _can_place_held_item()
-		for slot in _get_hovered_inventory_slots():
-			if _can_place_held_item():
+		for slot in _get_hovered_inventory_slots(held_item, _get_item_coordinate()):
+			if _can_place_held_item(_get_item_coordinate()):
 				slot.hover(InventorySlot.HoverMode.DEFAULT)
 			else:
 				slot.hover(InventorySlot.HoverMode.INVALID)
 			hovered_slots.append(slot)
+			
+func _input(event: InputEvent) -> void:
+		if event.is_action_pressed("test1"):
+			print(item_to_slots.keys())
 
 func create_slot(index: int) -> void:
 	var coordinate = Vector2i(index % size_x, index / size_x)
@@ -37,19 +42,32 @@ func hold_item(item: InventoryItem) -> void:
 	held_item = item
 	held_item.drag_and_drop.drag_canceled.connect(_on_held_item_drag_canceled)
 	held_item.drag_and_drop.drag_dropped.connect(_on_held_item_drag_dropped)
+	
+	if item_to_slots.has(held_item):
+		for slot: InventorySlot in item_to_slots[held_item]:
+			slot.free_item()
+		item_to_slots.erase(held_item)
 
 func unhold_item() -> void:
+	held_item.drag_and_drop.drag_canceled.disconnect(_on_held_item_drag_canceled)
+	held_item.drag_and_drop.drag_dropped.disconnect(_on_held_item_drag_dropped)
 	held_item = null
 	_unhover_all_slots()
 
-func _put_held_item_to_slots() -> void:
-	held_item.global_position = slot_map[_get_item_coordinate()].global_position + GRID_CENTER_OFFSET_PX
-	var slots := _get_hovered_inventory_slots()
+func _put_item_to_slots(item: InventoryItem, item_coord: Vector2i) -> void:
+	item.global_position = slot_map[item_coord].global_position + GRID_CENTER_OFFSET_PX
+	var slots := _get_hovered_inventory_slots(held_item, item_coord)
 	for slot in slots:
-		slot.set_item(held_item)
+		slot.set_item(item) 
+
+	item_to_slots[held_item] = slots
 
 func _cancel_held_item_drag(starting_position: Vector2) -> void:
 	held_item.global_position = starting_position
+	held_item.global_rotation = held_item.original_rotation
+	var coords = _global_to_grid_coords(starting_position)
+	if _is_slot_available(coords):
+		_put_item_to_slots(held_item, _global_to_grid_coords(starting_position))
 
 func _unhover_all_slots() -> void:
 	for slot in hovered_slots:
@@ -68,25 +86,29 @@ func _is_slot_available(coord: Vector2i) -> bool:
 
 func _get_item_coordinate() -> Vector2i:
 	var item_pos := self.get_local_mouse_position() + held_item.drag_and_drop.offset
-	var result = Vector2i(item_pos / GRID_SIZE_PX)
-	if item_pos.x < 0:
+	return _local_to_grid_coords(item_pos)
+	
+func _local_to_grid_coords(local_coords: Vector2) -> Vector2i:
+	var result = Vector2i(local_coords / GRID_SIZE_PX)
+	if local_coords.x < 0:
 		result -= Vector2i(1, 0)
-	if item_pos.y < 0:
+	if local_coords.y < 0:
 		result -= Vector2i(0, 1)
 	return result
 
-func _can_place_held_item() -> bool:
-	var item_coord := _get_item_coordinate()
-	for offset: Vector2i in held_item.item_data.item_cells: 
-		var final_coord := item_coord + offset
+func _global_to_grid_coords(global_pos: Vector2) -> Vector2i:
+	return _local_to_grid_coords(global_pos - self.global_position)
+
+func _can_place_held_item(item_coord: Vector2i) -> bool:
+	for cell_offset: Vector2i in held_item.get_item_cells(): 
+		var final_coord := item_coord + cell_offset
 		if not _is_slot_available(final_coord):
 			return false
 	return true
 
-func _get_hovered_inventory_slots() -> Array[InventorySlot]:
-	var item_coord := _get_item_coordinate()
+func _get_hovered_inventory_slots(item: InventoryItem, item_coord: Vector2i) -> Array[InventorySlot]:
 	var result: Array[InventorySlot] = []
-	for offset: Vector2i in held_item.item_data.item_cells: 
+	for offset: Vector2i in item.get_item_cells(): 
 		var final_coord := item_coord + offset
 		if _is_slot_available(final_coord):
 			result.append(slot_map[final_coord])
@@ -97,8 +119,9 @@ func _on_held_item_drag_canceled(starting_position: Vector2) -> void:
 	unhold_item()
 	
 func _on_held_item_drag_dropped(starting_position: Vector2) -> void:
-	if _can_place_held_item():
-		_put_held_item_to_slots()
+	var item_coords = _get_item_coordinate()
+	if _can_place_held_item(item_coords):
+		_put_item_to_slots(held_item,item_coords)
 	else:
 		_cancel_held_item_drag(starting_position)
 	unhold_item()

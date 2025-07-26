@@ -1,9 +1,17 @@
-[gd_scene load_steps=6 format=3 uid="uid://belhd4j3knrx8"]
+[gd_scene load_steps=14 format=3 uid="uid://belhd4j3knrx8"]
 
 [ext_resource type="PackedScene" uid="uid://fiq3xd1h5emu" path="res://scenes/level/level.tscn" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://f4e3kupbm74j" path="res://scenes/unit/unit.tscn" id="2_0wfyh"]
 [ext_resource type="Resource" uid="uid://ys1af3smjdu7" path="res://data/units/man.tres" id="2_jyhfs"]
 [ext_resource type="Script" uid="uid://54kmpynixctn" path="res://data/units/unit_stats.gd" id="3_sugp2"]
+[ext_resource type="Script" uid="uid://cnkud3adllsqi" path="res://scenes/inventory_ui.gd" id="5_tefeu"]
+[ext_resource type="Script" uid="uid://cnr4vvu3ph8sc" path="res://scenes/inventory/item_data/item_data.gd" id="6_tipki"]
+[ext_resource type="PackedScene" uid="uid://0fawcllvqyep" path="res://scenes/inventory/inventory.tscn" id="7_85g3d"]
+[ext_resource type="Resource" uid="uid://ms515xejcuup" path="res://scenes/inventory/item_data/2x1.tres" id="7_choun"]
+[ext_resource type="Resource" uid="uid://vsktun53qvij" path="res://scenes/inventory/item_data/L_piece.tres" id="8_eb6dy"]
+[ext_resource type="Resource" uid="uid://drrinpkrfddx6" path="res://scenes/inventory/item_data/O_piece.tres" id="9_trceg"]
+[ext_resource type="Resource" uid="uid://b8noa80jua4ls" path="res://scenes/inventory/item_data/S_piece.tres" id="10_a8y0u"]
+[ext_resource type="Resource" uid="uid://sx0gnlf6o54p" path="res://scenes/inventory/item_data/T_piece.tres" id="11_jkv2x"]
 
 [sub_resource type="Resource" id="Resource_sugp2"]
 script = ExtResource("3_sugp2")
@@ -15,7 +23,7 @@ attack_damage = 0
 attack_speed = 0
 metadata/_custom_type_script = "uid://54kmpynixctn"
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node"]
 
 [node name="Unit" parent="." instance=ExtResource("2_0wfyh")]
 position = Vector2(231, 171)
@@ -30,3 +38,53 @@ position = Vector2(317, 161)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(320, 179)
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+position = Vector2(512, 176)
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="InventoryUI" type="Control" parent="UI"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 3
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_tefeu")
+items = Array[ExtResource("6_tipki")]([ExtResource("7_choun"), ExtResource("8_eb6dy"), ExtResource("9_trceg"), ExtResource("10_a8y0u"), ExtResource("11_jkv2x")])
+
+[node name="Background" type="ColorRect" parent="UI/InventoryUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.129412, 0.129412, 0.129412, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/InventoryUI/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="HBoxContainer" type="VBoxContainer" parent="UI/InventoryUI/Background/MarginContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="UI/InventoryUI/Background/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Spawn item"
+
+[node name="InventoryGrid" parent="UI/InventoryUI/Background/MarginContainer/HBoxContainer" instance=ExtResource("7_85g3d")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[connection signal="pressed" from="UI/InventoryUI/Background/MarginContainer/HBoxContainer/Button" to="UI/InventoryUI" method="_on_button_pressed"]

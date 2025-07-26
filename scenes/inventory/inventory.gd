@@ -5,7 +5,7 @@ extends Node
 @export var size_x: int = 8
 @export var size_y: int = 8
 
-@onready var grid_container: GridContainer = $InventoryUI/ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GridContainer
+@onready var grid_container: GridContainer = $ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GridContainer
 
 const GRID_SIZE_PX = 32
 const GRID_CENTER_OFFSET_PX = Vector2(GRID_SIZE_PX / 2, GRID_SIZE_PX / 2)
@@ -18,9 +18,6 @@ func _ready() -> void:
 	grid_container.columns = size_x
 	for i in range(size_x * size_y):
 		create_slot(i)
-		
-	# DEBUG
-	hold_item($InventoryItem)
 
 func _process(_delta: float) -> void:
 	if held_item:

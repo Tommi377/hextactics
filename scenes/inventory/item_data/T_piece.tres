@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://sx0gnlf6o54p"]
+
+[ext_resource type="Script" uid="uid://cnr4vvu3ph8sc" path="res://scenes/inventory/item_data/item_data.gd" id="1_syaya"]
+
+[resource]
+script = ExtResource("1_syaya")
+item_cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(1, 2)])
+metadata/_custom_type_script = "uid://cnr4vvu3ph8sc"

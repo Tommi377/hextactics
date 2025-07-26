@@ -5,8 +5,10 @@ const MY_SCENE = preload("res://scenes/inventory/inventory_slot/inventory_slot.t
 
 const MAT_SLOT_DEFAULT = preload("res://scenes/inventory/inventory_slot/slot_default.tres")
 const MAT_SLOT_HOVER = preload("res://scenes/inventory/inventory_slot/slot_hover.tres")
+const MAT_SLOT_INVALID = preload("res://scenes/inventory/inventory_slot/slot_invalid.tres")
 
 enum States {DEFAULT, TAKEN, FREE}
+enum HoverMode {DEFAULT, INVALID}
 
 var coordinate: Vector2i
 var is_hovering := false
@@ -20,10 +22,21 @@ static func create_instance(parent: Node, coordinate: Vector2i) -> InventorySlot
 	
 	return inventorySlot
 
+func set_item(item: Node) -> void:
+	item_stored = item
+	state = States.TAKEN
 
-func hover() -> void:
+func free_item() -> void:
+	item_stored = null
+	state = States.FREE
+
+func hover(mode: HoverMode) -> void:
 	is_hovering = true
-	add_theme_stylebox_override('panel', MAT_SLOT_HOVER)
+	match mode:
+		HoverMode.DEFAULT:
+			add_theme_stylebox_override('panel', MAT_SLOT_HOVER)
+		HoverMode.INVALID:
+			add_theme_stylebox_override('panel', MAT_SLOT_INVALID)
 
 
 func unhover() -> void:

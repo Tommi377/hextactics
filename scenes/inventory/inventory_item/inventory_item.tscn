@@ -15,10 +15,12 @@ script = ExtResource("3_aubwb")
 target = NodePath("..")
 metadata/_custom_type_script = "uid://b8r0311h50eao"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_k35mr")
+[node name="CanvasGroup" type="CanvasGroup" parent="."]
 
-[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D"]
+[node name="Sprite2D" type="Sprite2D" parent="CanvasGroup"]
 texture = ExtResource("2_pradd")
 region_enabled = true
 region_rect = Rect2(32, 0, 32, 32)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_k35mr")
